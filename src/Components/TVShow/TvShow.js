@@ -19,27 +19,32 @@ function TvShow() {
           api_key: api,
           language: lang,
           page: page,
-          search: search,
+          // search: search,
         },
       })
       .then((response) => {
         // console.log(response.data.results);
+
         setAllTvs(response.data.results);
       })
       .catch((err) => console.log(err));
-  }, [lang, page]);
-  useEffect(() => {
-    axios
-      .get(`https://api.themoviedb.org/3/search/movie?`, {
-        params: {
-          api_key: api,
-          query: search,
-        },
-      })
-      .then((response) => {
-        console.log(response.value);
-      });
-  }, [search]);
+
+    if (search != "") {
+      axios
+        .get(`https://api.themoviedb.org/3/search/movie?`, {
+          params: {
+            api_key: api,
+            query: search,
+          },
+        })
+        .then((response) => {
+          // console.log(response.data.results);
+
+          setAllTvs(response.data.results);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [lang, page, search]);
 
   const changLang = () => {
     setLang(lang == "en-US" ? "ar-SA" : "en-US");
@@ -58,7 +63,10 @@ function TvShow() {
   };
   const searchMovie = (e) => {
     e.preventDefault();
-    setAllTvs({ ...alltvs });
+    setSearch({ ...search });
+    console.log("====================================");
+    console.log(search);
+    console.log("====================================");
   };
   return (
     <>
@@ -75,7 +83,7 @@ function TvShow() {
                 <div class="col-auto">
                   <i class="fas fa-search h4 text-body"></i>
                 </div>
-                <div class="col">
+                {/* <div class="col">
                   <input
                     class="form-control form-control-lg form-control-borderless"
                     value={search}
@@ -92,7 +100,20 @@ function TvShow() {
                   >
                     Search
                   </button>
-                </div>
+                </div> */}
+                <Form>
+                  <Form.Group className="mb-3 d-flex">
+                    <Form.Control
+                      type="text"
+                      placeholder="Search Movies"
+                      className="rounded-0"
+                      value={search}
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                      }}
+                    />
+                  </Form.Group>
+                </Form>
               </div>
             </form>
           </div>
